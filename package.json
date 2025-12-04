@@ -2,13 +2,13 @@
   "name": "puppeteer-cloudflare-scraper",
   "version": "1.0.0",
   "type": "module",
-  "description": "Puppeteer scraper that bypasses Cloudflare JavaScript challenges",
-  "main": "index.js",
   "scripts": {
+    "postinstall": "npx @puppeteer/browsers install chromium",
     "start": "node index.js"
   },
   "dependencies": {
     "express": "^4.18.2",
-    "puppeteer": "^22.0.0"
+    "puppeteer": "^22.4.1",
+    "@puppeteer/browsers": "^2.4.1"
   }
 }
