@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: playwright-scraper
+    env: node
+    region: frankfurt
+    buildCommand: |
+      npm install
+      npx playwright install --with-deps
+    startCommand: node index.js
+    envVars:
+      - key: PLAYWRIGHT_BROWSERS_PATH
+        value: "0"
