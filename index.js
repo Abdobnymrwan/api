@@ -1,12 +1,11 @@
 import express from "express";
-import chromium from "chrome-aws-lambda";
-import puppeteer from "puppeteer-core";
+import { chromium } from "playwright";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.get("/", (req, res) => {
-  res.send("Cloudflare Scraper API ✔ works");
+  res.send("Playwright Scraper API running ✔");
 });
 
 app.get("/scrape", async (req, res) => {
@@ -17,24 +16,22 @@ app.get("/scrape", async (req, res) => {
   }
 
   try {
-    const executablePath = await chromium.executablePath;
-
-    const browser = await puppeteer.launch({
-      executablePath,
-      headless: true,
-      args: chromium.args,
-      defaultViewport: chromium.defaultViewport
+    const browser = await chromium.launch({
+      args: ["--no-sandbox"],
+      headless: true
     });
 
     const page = await browser.newPage();
 
-    await page.setUserAgent(
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
-    );
+    await page.setExtraHTTPHeaders({
+      "User-Agent":
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
+    });
 
-    await page.goto(url, { waitUntil: "networkidle2", timeout: 0 });
+    await page.goto(url, { waitUntil: "networkidle", timeout: 0 });
 
     const html = await page.content();
+
     await browser.close();
 
     res.send(html);
@@ -43,4 +40,4 @@ app.get("/scrape", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => console.log("API running on port " + PORT));
+app.listen(PORT, () => console.log("Scraper Online on port " + PORT));
